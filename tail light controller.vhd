@@ -1,3 +1,5 @@
+Copyright 2022. Hyeonsu Lee All rights reserved.
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -13,11 +15,11 @@ entity TAIL_LIGHT is
 end TAIL_LIGHT;
 
 architecture Behavioral of TAIL_LIGHT is
-    signal state : std_logic_vector(2 downto 0);       --stateÀÇ °³¼ö°¡ ÃÑ 5°³ÀÌ±â ¶§¹®¿¡ 0~7±îÁö ³ªÅ¸³¾ ¼ö ÀÖµµ·Ï 3bit std_logic_vector ÀÌ¿ë
-    signal next_state : std_logic_vector(2 downto 0);  --Flipfolp 3°³ ÀÌ¿ëÇÑ´Ù´Â ÀÇ¹Ì
+    signal state : std_logic_vector(2 downto 0);       --stateì˜ ê°œìˆ˜ê°€ ì´ 5ê°œì´ê¸° ë•Œë¬¸ì— 0~7ê¹Œì§€ ë‚˜íƒ€ë‚¼ ìˆ˜ ìˆë„ë¡ 3bit std_logic_vector ì´ìš©
+    signal next_state : std_logic_vector(2 downto 0);  --Flipfolp 3ê°œ ì´ìš©í•œë‹¤ëŠ” ì˜ë¯¸
 begin
     --state transition
-    process(CLK, RESET)                         --state reg´Â sequential logicÀÌ±â ¶§¹®¿¡ CLKÇÊ¿ä, asynchronous reset
+    process(CLK, RESET)                         --state regëŠ” sequential logicì´ê¸° ë•Œë¬¸ì— CLKí•„ìš”, asynchronous reset
         begin
             if(RESET='0') then
                 state<="000";   --RESET state
@@ -27,60 +29,60 @@ begin
     end process;
     
     --led out
-    process(state)                  --moore machineÀº Ãâ·ÂÀÌ ¿ÀÁ÷ ÇöÀç »óÅÂ¿¡ ÀÇÇØ¼­ °áÁ¤
+    process(state)                  --moore machineì€ ì¶œë ¥ì´ ì˜¤ì§ í˜„ì¬ ìƒíƒœì— ì˜í•´ì„œ ê²°ì •
         begin
             if(state="000") then    --RESET state
                 LED<="00000000";    -- all led off
             elsif(state="001") then --ready state
-                LED<="10000001";	   --¾ç ³¡ led on
+                LED<="10000001";	   --ì–‘ ë led on
             elsif(state="010") then     -- left state
-                LED<="11110000";        -- ¿ŞÂÊ 4°³ led on
+                LED<="11110000";        -- ì™¼ìª½ 4ê°œ led on
             elsif(state="011") then     -- right state
-                LED<="00001111";        --¿À¸¥ÂÊ 4°³ led on
+                LED<="00001111";        --ì˜¤ë¥¸ìª½ 4ê°œ led on
             else
                 LED<="11111111";	--break state / all led on
             end if;
     end process;
     
     --next state
-    process(RESET, BREAK, LEFT, RIGHT, state) --ÇöÀç »óÅÂ¿¡¼­ ¾î¶² ÀÔ·ÂÀ» ¹Ş´ÂÁö¿¡ µû¶ó ´ÙÀ½ »óÅÂ °áÁ¤
+    process(RESET, BREAK, LEFT, RIGHT, state) --í˜„ì¬ ìƒíƒœì—ì„œ ì–´ë–¤ ì…ë ¥ì„ ë°›ëŠ”ì§€ì— ë”°ë¼ ë‹¤ìŒ ìƒíƒœ ê²°ì •
         begin
         --reset state
         if(state="000")then                         
-            if(RESET='0') then next_state<="000";  --´ÙÀ½ »óÅÂ reset state
-            else next_state<="001";                --´ÙÀ½ »óÅÂ ready state 
+            if(RESET='0') then next_state<="000";  --ë‹¤ìŒ ìƒíƒœ reset state
+            else next_state<="001";                --ë‹¤ìŒ ìƒíƒœ ready state 
             end if;
             
         --ready state
         elsif(state="001") then
-            if(RESET='0') then next_state<="000";   --´ÙÀ½ »óÅÂ reset state
-            elsif(BREAK='1') then next_state<="100";    --´ÙÀ½ »óÅÂ break state
-            elsif(LEFT='1' and RIGHT='0') then next_state<="010";   --´ÙÀ½ »óÅÂ left state
-            elsif(LEFT='0' and RIGHT='1') then next_state<="011";   --´ÙÀ½ »óÅÂ right state
-            else next_state<="001";     --´ÙÀ½ »óÅÂ ready state
+            if(RESET='0') then next_state<="000";   --ë‹¤ìŒ ìƒíƒœ reset state
+            elsif(BREAK='1') then next_state<="100";    --ë‹¤ìŒ ìƒíƒœ break state
+            elsif(LEFT='1' and RIGHT='0') then next_state<="010";   --ë‹¤ìŒ ìƒíƒœ left state
+            elsif(LEFT='0' and RIGHT='1') then next_state<="011";   --ë‹¤ìŒ ìƒíƒœ right state
+            else next_state<="001";     --ë‹¤ìŒ ìƒíƒœ ready state
             end if;
             
 	--left state
         elsif(state="010") then
-            if(RESET='0') then next_state<="000";   --´ÙÀ½ »óÅÂ reset state
-            elsif(BREAK='1') then next_state<="100";    --´ÙÀ½ »óÅÂ break state
-            elsif(LEFT='1' and RIGHT='0') then next_state<="010";   --´ÙÀ½ »óÅÂ left state
-            else next_state<="001";     --´ÙÀ½ »óÅÂ ready state
+            if(RESET='0') then next_state<="000";   --ë‹¤ìŒ ìƒíƒœ reset state
+            elsif(BREAK='1') then next_state<="100";    --ë‹¤ìŒ ìƒíƒœ break state
+            elsif(LEFT='1' and RIGHT='0') then next_state<="010";   --ë‹¤ìŒ ìƒíƒœ left state
+            else next_state<="001";     --ë‹¤ìŒ ìƒíƒœ ready state
             end if;
             
 	--right state
         elsif(state="011") then
-            if(RESET='0') then next_state<="000";       --´ÙÀ½ »óÅÂ reset state
-            elsif(BREAK='1') then next_state<="100";        --´ÙÀ½ »óÅÂ break state
-            elsif(LEFT='0' and RIGHT='1') then next_state<="011";       --´ÙÀ½ »óÅÂ right state
-            else next_state<="001"; --´ÙÀ½ »óÅÂ ready state
+            if(RESET='0') then next_state<="000";       --ë‹¤ìŒ ìƒíƒœ reset state
+            elsif(BREAK='1') then next_state<="100";        --ë‹¤ìŒ ìƒíƒœ break state
+            elsif(LEFT='0' and RIGHT='1') then next_state<="011";       --ë‹¤ìŒ ìƒíƒœ right state
+            else next_state<="001"; --ë‹¤ìŒ ìƒíƒœ ready state
             end if;
             
 	--break state
         else
-            if(RESET='0') then next_state<="000";   --´ÙÀ½ »óÅÂ reset state
-            elsif(BREAK='1') then next_state<="100";    --´ÙÀ½ »óÅÂ break state
-            else next_state<="001"; --´ÙÀ½ »óÅÂ ready state
+            if(RESET='0') then next_state<="000";   --ë‹¤ìŒ ìƒíƒœ reset state
+            elsif(BREAK='1') then next_state<="100";    --ë‹¤ìŒ ìƒíƒœ break state
+            else next_state<="001"; --ë‹¤ìŒ ìƒíƒœ ready state
             end if;
         end if;	
     end process;
